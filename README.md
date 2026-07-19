@@ -1,1 +1,1028 @@
 # 9k2c5w4sdv-eng.github.io
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>습관 변이 실험실 v2 - Habit Mutation Lab</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Cyberpunk & Playful look -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #080c14;
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+        .cyber-font {
+            font-family: 'Orbitron', sans-serif;
+        }
+        /* Custom Glowing Effects */
+        .neon-glow-emerald {
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.25);
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+        .neon-glow-indigo {
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.25);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+        /* Liquid Animation for the Cell Body */
+        @keyframes liquid {
+            0%, 100% { border-radius: 45% 55% 70% 30% / 50% 50% 50% 50%; }
+            33% { border-radius: 65% 35% 50% 50% / 55% 45% 55% 45%; }
+            66% { border-radius: 50% 50% 35% 65% / 45% 55% 45% 55%; }
+        }
+        .animate-liquid {
+            animation: liquid 7s ease-in-out infinite;
+        }
+        /* Soft Floating */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(3deg); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        /* Bubble floating */
+        @keyframes bubble-up {
+            0% { transform: translateY(20px) scale(0); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-80px) scale(1.3); opacity: 0; }
+        }
+        .bubble-particle {
+            animation: bubble-up 4s infinite linear;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-gray-950/80 backdrop-blur-md px-6 py-4 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center animate-pulse shadow-[0_0_20px_rgba(20,184,166,0.4)]">
+                    <span class="text-lg font-black text-slate-950">🧬</span>
+                </div>
+                <div>
+                    <h1 class="text-xl font-black tracking-wider cyber-font text-teal-400">HABIT MUTATION LAB <span class="text-xs bg-teal-950 text-teal-400 border border-teal-800 px-2 py-0.5 rounded ml-2">v2.0 PRO</span></h1>
+                    <p class="text-xs text-gray-400">나의 투두와 일상 습관으로 키우는 가상 세포 시뮬레이터</p>
+                </div>
+            </div>
+            <!-- Top Quick Stats -->
+            <div class="flex items-center space-x-4">
+                <div class="bg-gray-900/90 px-4 py-2 rounded-xl border border-gray-800 text-xs flex items-center gap-3">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span class="text-gray-400">연구 일수: <span id="lab-days" class="text-emerald-400 font-bold cyber-font">DAY 1</span></span>
+                    <span class="text-gray-600">|</span>
+                    <span class="text-gray-400">총 미션 해결: <span id="total-completed-missions" class="text-teal-400 font-bold cyber-font">0</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 flex-grow">
+        
+        <!-- Left Section: Goals & To-Dos (Grid span 7) -->
+        <section class="lg:col-span-7 flex flex-col gap-6">
+            
+            <!-- 1. Motivation Board (Grand Goal & Reward) -->
+            <div class="bg-gradient-to-r from-indigo-950/40 to-slate-900/40 border border-indigo-500/20 rounded-2xl p-5 backdrop-blur-sm neon-glow-indigo">
+                <div class="flex items-center justify-between mb-3 border-b border-indigo-950 pb-2">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-indigo-400 text-lg">🎯</span>
+                        <h2 class="text-sm font-bold text-indigo-300 tracking-wider">나의 한계 돌파 동기부여 보드</h2>
+                    </div>
+                    <span class="text-[10px] cyber-font text-indigo-400 bg-indigo-950/60 px-2 py-0.5 rounded border border-indigo-800">MOTIVATION</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Grand Goal Input -->
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-gray-400 flex items-center gap-1">
+                            🏆 최종 목표 (이루고 싶은 미래)
+                        </label>
+                        <input type="text" id="grand-goal" placeholder="예: 한 달 동안 주 4회 운동하고 30시간 공부하기!" 
+                               class="w-full bg-gray-950/90 border border-gray-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-gray-600 focus:outline-none focus:border-indigo-500 transition-colors">
+                    </div>
+                    <!-- Reward Input -->
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-gray-400 flex items-center gap-1">
+                            🎁 목표 달성 시 하고 싶은 일 (자가 보상)
+                        </label>
+                        <input type="text" id="goal-reward" placeholder="예: 가고 싶었던 오마카세 가기, 밤샘 콘서트 예매!" 
+                               class="w-full bg-gray-950/90 border border-gray-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-gray-600 focus:outline-none focus:border-indigo-500 transition-colors">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Smart Category To-Do Lists -->
+            <div class="bg-gray-900/30 border border-gray-800 rounded-2xl p-5 flex flex-col gap-5">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-teal-400 text-lg">📝</span>
+                        <h2 class="text-sm font-bold text-gray-200">목표 달성 체크리스트 (To-Do)</h2>
+                    </div>
+                    <span class="text-[10px] text-gray-500">투두 완료 시 세포가 진화해요!</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <!-- Study Category To-Do -->
+                    <div class="bg-slate-950/60 border border-gray-800 hover:border-sky-500/20 rounded-xl p-4 transition-all flex flex-col justify-between min-h-[250px]">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-black text-sky-400 flex items-center gap-1.5">
+                                    🧠 공부 & 지적인 성장
+                                </span>
+                                <span id="study-progress-pct" class="text-[10px] cyber-font text-sky-300 bg-sky-950/50 px-2 py-0.5 rounded border border-sky-900">0% 완료</span>
+                            </div>
+                            
+                            <!-- Input to add study todo -->
+                            <div class="flex gap-1.5 mb-3">
+                                <input type="text" id="todo-study-input" placeholder="새로운 공부 계획 입력..." 
+                                       class="flex-grow bg-gray-900/80 border border-gray-800 rounded-lg px-2.5 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-sky-500">
+                                <button id="todo-study-add" class="bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors">+</button>
+                            </div>
+
+                            <!-- Study Todo List Container -->
+                            <div id="todo-study-list" class="space-y-1.5 max-h-[140px] overflow-y-auto pr-1">
+                                <!-- Dynamic List -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Workout Category To-Do -->
+                    <div class="bg-slate-950/60 border border-gray-800 hover:border-emerald-500/20 rounded-xl p-4 transition-all flex flex-col justify-between min-h-[250px]">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-black text-emerald-400 flex items-center gap-1.5">
+                                    ⚡ 운동 & 물리 에너지
+                                </span>
+                                <span id="workout-progress-pct" class="text-[10px] cyber-font text-emerald-300 bg-emerald-950/50 px-2 py-0.5 rounded border border-emerald-900">0% 완료</span>
+                            </div>
+
+                            <!-- Input to add workout todo -->
+                            <div class="flex gap-1.5 mb-3">
+                                <input type="text" id="todo-workout-input" placeholder="새로운 운동 계획 입력..." 
+                                       class="flex-grow bg-gray-900/80 border border-gray-800 rounded-lg px-2.5 py-1.5 text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-emerald-500">
+                                <button id="todo-workout-add" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors">+</button>
+                            </div>
+
+                            <!-- Workout Todo List Container -->
+                            <div id="todo-workout-list" class="space-y-1.5 max-h-[140px] overflow-y-auto pr-1">
+                                <!-- Dynamic List -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 3. Quick Habiteers (Water, Sleep, Shower) -->
+            <div class="bg-gray-900/30 border border-gray-800 rounded-2xl p-5">
+                <div class="flex items-center space-x-2 mb-4">
+                    <span class="text-cyan-400 text-lg">⚙️</span>
+                    <h2 class="text-sm font-bold text-gray-200">간편 일상 관리 계측기 (Quick Trackers)</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    
+                    <!-- Water Intake Tracker -->
+                    <div class="bg-slate-950/40 border border-gray-800/80 rounded-xl p-3.5 flex flex-col justify-between">
+                        <div>
+                            <span class="text-cyan-400 font-bold flex items-center gap-1.5 mb-2">💧 수분 섭취량</span>
+                            <p class="text-[11px] text-gray-500 leading-relaxed mb-3">오늘 마신 물의 용량을 체크합니다.</p>
+                        </div>
+                        <div class="flex items-center justify-between bg-cyan-950/20 border border-cyan-950 px-3 py-2.5 rounded-xl">
+                            <button id="btn-water-minus" class="w-6 h-6 rounded bg-cyan-950 border border-cyan-800 hover:bg-cyan-900 text-cyan-400 font-bold">-</button>
+                            <span id="txt-water-val" class="cyber-font text-cyan-300 font-black text-sm">1.0 L</span>
+                            <button id="btn-water-plus" class="w-6 h-6 rounded bg-cyan-950 border border-cyan-800 hover:bg-cyan-900 text-cyan-400 font-bold">+</button>
+                        </div>
+                    </div>
+
+                    <!-- Sleep Hours Tracker -->
+                    <div class="bg-slate-950/40 border border-gray-800/80 rounded-xl p-3.5 flex flex-col justify-between">
+                        <div>
+                            <span class="text-purple-400 font-bold flex items-center gap-1.5 mb-2">💤 수면 시간</span>
+                            <p class="text-[11px] text-gray-500 leading-relaxed mb-2">어젯밤 몇 시간 동안 수면했나요?</p>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-[10px] text-purple-400">
+                                <span>수면 슬라이더</span>
+                                <span id="txt-sleep-val" class="cyber-font font-bold">7.0 시간</span>
+                            </div>
+                            <input type="range" id="input-sleep" min="3" max="11" step="0.5" value="7" 
+                                   class="w-full h-1 bg-purple-900 rounded appearance-none cursor-pointer accent-purple-400">
+                        </div>
+                    </div>
+
+                    <!-- Shower Completion Button -->
+                    <div class="bg-slate-950/40 border border-gray-800/80 rounded-xl p-3.5 flex flex-col justify-between">
+                        <div>
+                            <span class="text-amber-400 font-bold flex items-center gap-1.5 mb-2">🧼 샤워 및 청결</span>
+                            <p class="text-[11px] text-gray-500 leading-relaxed mb-3">몸을 개운하게 씻고 리프레시했나요?</p>
+                        </div>
+                        <button id="btn-shower" class="w-full py-2 px-3 rounded-lg border border-amber-900 bg-amber-950/20 hover:bg-amber-950/50 text-amber-400 font-bold text-xs transition-all flex items-center justify-center gap-1.5">
+                            <span id="shower-icon">🧼</span> <span id="shower-text">아직 씻지 않음</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Right Section: Incubator & Live Mutation Specimen (Grid span 5) -->
+        <section class="lg:col-span-5 flex flex-col gap-6">
+            
+            <!-- Live Incubator Screen -->
+            <div class="bg-gradient-to-b from-gray-950 to-gray-900 border border-gray-800 rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between min-h-[440px] shadow-inner">
+                <!-- Background Grid and Lab Overlay -->
+                <div class="absolute inset-0 bg-[linear-gradient(to_right,#111827_1px,transparent_1px),linear-gradient(to_bottom,#111827_1px,transparent_1px)] bg-[size:2.5rem_2.5rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-45"></div>
+                
+                <div class="absolute top-4 left-4 text-[9px] cyber-font text-emerald-500/80 bg-emerald-950/20 px-2 py-0.5 rounded border border-emerald-900/30 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    LIVE INCUBATOR CAM v2
+                </div>
+                <div class="absolute top-4 right-4 text-[9px] cyber-font text-gray-500 flex flex-col items-end">
+                    <span id="hud-temp">TEMP: 36.5°C</span>
+                    <span id="hud-ph">PH: 7.39</span>
+                </div>
+
+                <!-- Bubble background container -->
+                <div id="bubble-container" class="absolute inset-0 pointer-events-none overflow-hidden">
+                    <!-- Dynamic H2O Bubbles -->
+                </div>
+
+                <!-- Main Specimen Display Area -->
+                <div class="flex-grow flex items-center justify-center relative my-4">
+                    
+                    <!-- Aura / Halo of Brain growth -->
+                    <div id="halo" class="absolute w-52 h-52 rounded-full border-2 border-dashed border-sky-400/30 animate-[spin_30s_linear_infinite] opacity-0 transition-all duration-500 scale-90"></div>
+                    <div id="halo-glow" class="absolute w-44 h-44 rounded-full bg-gradient-to-r from-sky-500/10 to-indigo-500/5 blur-2xl opacity-0 transition-all duration-500"></div>
+
+                    <!-- Clean Refreshing Steam Bubble (Shower active) -->
+                    <div id="clean-shower-cloud" class="absolute top-10 w-28 h-8 bg-white/10 rounded-full blur-md opacity-0 transition-all duration-700"></div>
+
+                    <!-- Muto Body Container -->
+                    <div id="muto-body" class="w-36 h-36 bg-gradient-to-tr from-teal-500 to-emerald-400 rounded-[45%_45%_55%_55%] animate-liquid animate-float shadow-[0_0_35px_rgba(20,184,166,0.3)] transition-all duration-700 relative flex items-center justify-center">
+                        
+                        <!-- 1. Shower bubbles (Placed on top of body if shower completed) -->
+                        <div id="shower-bubbles-crown" class="absolute -top-4 inset-x-0 flex justify-center space-x-1 opacity-0 transition-all duration-500">
+                            <span class="w-3.5 h-3.5 rounded-full bg-cyan-100/40 border border-white/30 animate-bounce">🫧</span>
+                            <span class="w-4 h-4 rounded-full bg-cyan-100/40 border border-white/30 animate-pulse delay-75">🫧</span>
+                            <span class="w-3 h-3 rounded-full bg-cyan-100/40 border border-white/30 animate-bounce delay-150">🫧</span>
+                        </div>
+
+                        <!-- 2. Intellectual Giant Brain (Grows with study todo completions) -->
+                        <div id="muto-brain" class="absolute -top-7 left-1/2 -translate-x-1/2 w-16 h-10 bg-gradient-to-r from-pink-400/90 to-rose-300/95 rounded-full blur-[0.5px] shadow-inner opacity-0 transition-all duration-500 flex items-center justify-center">
+                            <div class="w-0.5 h-full bg-pink-600/40"></div>
+                        </div>
+
+                        <!-- 3. Muscle Arms (Grows with workout todo completions) -->
+                        <!-- Left Arm -->
+                        <div id="arm-left" class="absolute -left-9 top-12 w-11 h-7 bg-gradient-to-l from-teal-500 to-teal-600 rounded-l-full origin-right transition-all duration-500 scale-x-0 opacity-0 flex items-center justify-start pl-1">
+                            <span class="text-[9px] text-teal-200">✊</span>
+                        </div>
+                        <!-- Right Arm -->
+                        <div id="arm-right" class="absolute -right-9 top-12 w-11 h-7 bg-gradient-to-r from-teal-400 to-teal-500 rounded-r-full origin-left transition-all duration-500 scale-x-0 opacity-0 flex items-center justify-end pr-1">
+                            <span class="text-[9px] text-teal-200">✊</span>
+                        </div>
+
+                        <!-- 4. Wings (Super evolution - achieved when all checklist to-dos are done!) -->
+                        <div id="super-wings-l" class="absolute -left-12 -top-2 w-10 h-10 bg-gradient-to-bl from-white/30 to-amber-300/10 rounded-full blur-[1px] opacity-0 transition-all duration-700 origin-bottom-right">🪶</div>
+                        <div id="super-wings-r" class="absolute -right-12 -top-2 w-10 h-10 bg-gradient-to-br from-white/30 to-amber-300/10 rounded-full blur-[1px] opacity-0 transition-all duration-700 origin-bottom-left">🪶</div>
+
+                        <!-- 5. Legs -->
+                        <div id="muto-legs" class="absolute -bottom-5 inset-x-0 flex justify-around px-5 opacity-0 transition-all duration-500">
+                            <div class="w-4 h-6 bg-emerald-600 rounded-b-xl shadow-md"></div>
+                            <div class="w-4 h-6 bg-emerald-600 rounded-b-xl shadow-md"></div>
+                        </div>
+
+                        <!-- Inner Face elements -->
+                        <div class="flex flex-col items-center justify-center relative z-10 select-none">
+                            <!-- Eyebrows (Stress or rest states) -->
+                            <div id="muto-eyebrows" class="flex justify-between w-14 mb-1.5 px-0.5 transition-all duration-300">
+                                <div class="w-4.5 h-1 bg-slate-900 rounded-full rotate-0"></div>
+                                <div class="w-4.5 h-1 bg-slate-900 rounded-full rotate-0"></div>
+                            </div>
+                            
+                            <!-- Eyes -->
+                            <div id="muto-eyes" class="flex justify-between items-center w-14 gap-2.5 transition-all duration-300">
+                                <div id="eye-l" class="w-4.5 h-4.5 bg-slate-950 rounded-full flex items-center justify-center transition-all duration-500 relative overflow-hidden">
+                                    <div class="w-1.5 h-1.5 bg-white rounded-full absolute top-0.5 left-0.5"></div>
+                                    <div id="red-eye-l" class="absolute inset-0 bg-red-600/80 opacity-0 transition-opacity duration-500"></div>
+                                </div>
+                                <div id="eye-r" class="w-4.5 h-4.5 bg-slate-950 rounded-full flex items-center justify-center transition-all duration-500 relative overflow-hidden">
+                                    <div class="w-1.5 h-1.5 bg-white rounded-full absolute top-0.5 left-0.5"></div>
+                                    <div id="red-eye-r" class="absolute inset-0 bg-red-600/80 opacity-0 transition-opacity duration-500"></div>
+                                </div>
+                            </div>
+
+                            <!-- Mouth -->
+                            <div id="muto-mouth" class="w-6 h-2 border-b-2 border-slate-900 rounded-full mt-3 transition-all duration-500"></div>
+                            
+                            <!-- Blush -->
+                            <div class="flex justify-between w-16 -mt-3.5 opacity-40">
+                                <div class="w-3 h-1 bg-pink-400 rounded-full blur-[1px]"></div>
+                                <div class="w-3 h-1 bg-pink-400 rounded-full blur-[1px]"></div>
+                            </div>
+                        </div>
+
+                        <!-- Sleeping indicator -->
+                        <div id="sleep-particles" class="absolute -top-4 -right-4 text-xs select-none animate-bounce opacity-0 transition-all duration-500">💤</div>
+                    </div>
+
+                </div>
+
+                <!-- Bottom Status HUD -->
+                <div class="flex justify-between items-end border-t border-gray-900 pt-4 z-10">
+                    <div>
+                        <div class="text-[9px] text-gray-500 uppercase tracking-widest cyber-font">Genotype Name</div>
+                        <div id="mutation-title" class="text-sm font-black text-white tracking-wide">일일 자극 대기 중...</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-[9px] text-gray-500 uppercase tracking-widest cyber-font">Mutation Rating</div>
+                        <div id="mutation-badge" class="text-xs font-bold text-emerald-400 flex items-center justify-end gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> 태초의 젤리 상태
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scientific Lab Analysis & Daily Action Box -->
+            <div class="bg-gray-900/30 border border-gray-800 rounded-2xl p-5 md:p-6 backdrop-blur-sm">
+                <div class="flex items-center space-x-2 mb-3">
+                    <span class="text-emerald-400">📋</span>
+                    <h2 class="text-xs font-bold text-gray-300 uppercase tracking-widest">🧬 실시간 유전자 상태 레포트</h2>
+                </div>
+                
+                <div class="space-y-3 text-xs">
+                    <div class="bg-slate-950/50 p-3 rounded-xl border border-gray-900">
+                        <span class="font-bold text-gray-500">추출된 학명:</span> <br>
+                        <span id="sci-name" class="italic text-teal-300 font-bold text-sm block mt-0.5">Muto Protocellum</span>
+                    </div>
+
+                    <div class="bg-slate-950/50 p-3 rounded-xl border border-gray-900">
+                        <span class="font-bold text-gray-500">배양관 피드백:</span>
+                        <p id="presc-text" class="text-gray-300 leading-relaxed mt-1">
+                            현재 투두리스트를 추가하고 일상 액션을 활성화하여 변이 에너지를 공급해 주세요.
+                        </p>
+                    </div>
+
+                    <button id="btn-save-specimen" class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 active:scale-95 text-slate-950 font-black text-xs py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 tracking-widest cyber-font shadow-[0_5px_15px_rgba(20,184,166,0.25)]">
+                        💾 SAVE SPECIMEN (오늘의 성장 보관)
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Lab Specimen Archives (Saved Data Logs) -->
+    <section class="max-w-7xl w-full mx-auto px-4 md:px-6 mb-12">
+        <div class="bg-gray-900/20 border border-gray-800 rounded-2xl p-5 md:p-6 backdrop-blur-sm">
+            <div class="flex justify-between items-center mb-5">
+                <div class="flex items-center space-x-2">
+                    <span class="text-emerald-400">🗃️</span>
+                    <h3 class="text-sm font-bold text-gray-200 tracking-wider">실험실 표본 보관소 (히스토리 데이터)</h3>
+                </div>
+                <button id="btn-clear-archive" class="text-xs text-rose-400 hover:text-rose-300 hover:underline transition-all">
+                    보관소 비우기
+                </button>
+            </div>
+            
+            <!-- Empty state -->
+            <div id="archive-empty" class="text-center py-10 border border-dashed border-gray-800 rounded-xl">
+                <span class="text-3xl block mb-2">🧫</span>
+                <p class="text-xs text-gray-500">아직 보관된 변이 표본이 없습니다. 오늘의 성장 흔적을 기록하고 보관해보세요!</p>
+            </div>
+
+            <!-- Log Grid -->
+            <div id="archive-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 hidden">
+                <!-- Dynamically generated logs card will go here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-950 bg-gray-950 px-6 py-6 text-center text-xs text-gray-600">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-3">
+            <p>© 2026 Habit Mutation Lab. All rights reserved.</p>
+            <div class="flex space-x-4">
+                <span class="hover:text-gray-400 cursor-pointer">실험실 보안 규정</span>
+                <span>|</span>
+                <span class="hover:text-gray-400 cursor-pointer">버그 문의 및 유전자 조작 제안</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Alert Popup -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-teal-500 text-slate-950 text-xs font-black px-4 py-3 rounded-xl shadow-xl border border-teal-400 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none flex items-center gap-2">
+        <span>🧬</span>
+        <span id="toast-msg">성공적으로 오늘 하루 성장을 기록했습니다!</span>
+    </div>
+
+    <!-- Script Execution -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // State management
+            let studyTodos = [
+                { id: '1', text: '독서 30분 하기', completed: false },
+                { id: '2', text: '영어 회화 1강 듣기', completed: false }
+            ];
+            let workoutTodos = [
+                { id: '3', text: '스쿼트 50개 달성', completed: false },
+                { id: '4', text: '저녁 유산소 러닝', completed: false }
+            ];
+
+            let waterVal = 1.0;
+            let sleepVal = 7.0;
+            let isShowerDone = false;
+            let totalMissionsCompleted = 0;
+            let savedSpecimens = [];
+
+            // DOM elements - Goals
+            const grandGoalInput = document.getElementById('grand-goal');
+            const goalRewardInput = document.getElementById('goal-reward');
+
+            // DOM elements - Inputs
+            const todoStudyInput = document.getElementById('todo-study-input');
+            const todoStudyAddBtn = document.getElementById('todo-study-add');
+            const todoStudyList = document.getElementById('todo-study-list');
+
+            const todoWorkoutInput = document.getElementById('todo-workout-input');
+            const todoWorkoutAddBtn = document.getElementById('todo-workout-add');
+            const todoWorkoutList = document.getElementById('todo-workout-list');
+
+            const studyProgressPct = document.getElementById('study-progress-pct');
+            const workoutProgressPct = document.getElementById('workout-progress-pct');
+
+            // DOM elements - Quick Habiteers
+            const btnWaterMinus = document.getElementById('btn-water-minus');
+            const btnWaterPlus = document.getElementById('btn-water-plus');
+            const txtWaterVal = document.getElementById('txt-water-val');
+
+            const inputSleep = document.getElementById('input-sleep');
+            const txtSleepVal = document.getElementById('txt-sleep-val');
+
+            const btnShower = document.getElementById('btn-shower');
+            const showerIcon = document.getElementById('shower-icon');
+            const showerText = document.getElementById('shower-text');
+
+            // DOM elements - Character graphics
+            const mutoBody = document.getElementById('muto-body');
+            const mutoBrain = document.getElementById('muto-brain');
+            const armLeft = document.getElementById('arm-left');
+            const armRight = document.getElementById('arm-right');
+            const mutoLegs = document.getElementById('muto-legs');
+            const mutoEyes = document.getElementById('muto-eyes');
+            const eyeL = document.getElementById('eye-l');
+            const eyeR = document.getElementById('eye-r');
+            const redEyeL = document.getElementById('red-eye-l');
+            const redEyeR = document.getElementById('red-eye-r');
+            const mutoMouth = document.getElementById('muto-mouth');
+            const mutoEyebrows = document.getElementById('muto-eyebrows');
+            const sleepParticles = document.getElementById('sleep-particles');
+            const bubbleContainer = document.getElementById('bubble-container');
+            const halo = document.getElementById('halo');
+            const haloGlow = document.getElementById('halo-glow');
+            const superWingsL = document.getElementById('super-wings-l');
+            const superWingsR = document.getElementById('super-wings-r');
+            const showerBubblesCrown = document.getElementById('shower-bubbles-crown');
+            const cleanShowerCloud = document.getElementById('clean-shower-cloud');
+
+            // DOM elements - Analysis & Records
+            const mutationTitle = document.getElementById('mutation-title');
+            const mutationBadge = document.getElementById('mutation-badge');
+            const sciName = document.getElementById('sci-name');
+            const prescText = document.getElementById('presc-text');
+            const btnSaveSpecimen = document.getElementById('btn-save-specimen');
+            const btnClearArchive = document.getElementById('btn-clear-archive');
+            const archiveEmpty = document.getElementById('archive-empty');
+            const archiveGrid = document.getElementById('archive-grid');
+            const totalMissionHUD = document.getElementById('total-completed-missions');
+            const labDaysHUD = document.getElementById('lab-days');
+
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+
+            // --- INITIAL SETUP (Load from localStorage) ---
+            if (localStorage.getItem('muto2_grand_goal')) {
+                grandGoalInput.value = localStorage.getItem('muto2_grand_goal');
+            }
+            if (localStorage.getItem('muto2_goal_reward')) {
+                goalRewardInput.value = localStorage.getItem('muto2_goal_reward');
+            }
+            if (localStorage.getItem('muto2_study_todos')) {
+                studyTodos = JSON.parse(localStorage.getItem('muto2_study_todos'));
+            }
+            if (localStorage.getItem('muto2_workout_todos')) {
+                workoutTodos = JSON.parse(localStorage.getItem('muto2_workout_todos'));
+            }
+            if (localStorage.getItem('muto2_specimens')) {
+                savedSpecimens = JSON.parse(localStorage.getItem('muto2_specimens'));
+            }
+            if (localStorage.getItem('muto2_quick_water')) {
+                waterVal = parseFloat(localStorage.getItem('muto2_quick_water'));
+            }
+            if (localStorage.getItem('muto2_quick_sleep')) {
+                sleepVal = parseFloat(localStorage.getItem('muto2_quick_sleep'));
+                inputSleep.value = sleepVal;
+            }
+            if (localStorage.getItem('muto2_quick_shower')) {
+                isShowerDone = localStorage.getItem('muto2_quick_shower') === 'true';
+            }
+
+            // Save goals to LocalStorage on input change
+            grandGoalInput.addEventListener('input', () => {
+                localStorage.setItem('muto2_grand_goal', grandGoalInput.value);
+            });
+            goalRewardInput.addEventListener('input', () => {
+                localStorage.setItem('muto2_goal_reward', goalRewardInput.value);
+            });
+
+            // --- BACKGROUND BUBBLE ENGINE ---
+            function renderBubbles(waterLevel) {
+                bubbleContainer.innerHTML = '';
+                const bubbleCount = Math.floor(waterLevel * 14); // 3L matches ~42 bubbles
+                for (let i = 0; i < bubbleCount; i++) {
+                    const bubble = document.createElement('div');
+                    bubble.className = 'bubble-particle absolute bg-cyan-400/25 rounded-full pointer-events-none';
+                    const size = Math.random() * 7 + 4;
+                    const left = Math.random() * 100;
+                    const duration = Math.random() * 2.5 + 1.5;
+                    const delay = Math.random() * 3;
+
+                    bubble.style.width = `${size}px`;
+                    bubble.style.height = `${size}px`;
+                    bubble.style.left = `${left}%`;
+                    bubble.style.bottom = `-10px`;
+                    bubble.style.animation = `bubble-up ${duration}s infinite linear`;
+                    bubble.style.animationDelay = `${delay}s`;
+
+                    bubbleContainer.appendChild(bubble);
+                }
+            }
+
+            // --- TO-DO RENDER SYSTEM ---
+            function renderTodoList(category) {
+                const listContainer = category === 'study' ? todoStudyList : todoWorkoutList;
+                const listData = category === 'study' ? studyTodos : workoutTodos;
+                
+                listContainer.innerHTML = '';
+                
+                if (listData.length === 0) {
+                    listContainer.innerHTML = `<p class="text-[10px] text-gray-600 text-center py-3">계획이 비어있습니다.</p>`;
+                    updateCategoryProgress(category);
+                    return;
+                }
+
+                listData.forEach(todo => {
+                    const item = document.createElement('div');
+                    item.className = `flex justify-between items-center p-2 rounded-lg text-xs border transition-colors ${
+                        todo.completed 
+                        ? 'bg-emerald-950/20 border-emerald-900/40 text-emerald-400/80 line-through' 
+                        : 'bg-gray-950/60 border-gray-900 text-gray-200'
+                    }`;
+
+                    item.innerHTML = `
+                        <div class="flex items-center space-x-2 flex-grow overflow-hidden">
+                            <input type="checkbox" ${todo.completed ? 'checked' : ''} 
+                                   class="rounded bg-gray-900 border-gray-800 text-teal-500 focus:ring-0 cursor-pointer"
+                                   onclick="toggleTodo('${category}', '${todo.id}')">
+                            <span class="truncate pr-1">${todo.text}</span>
+                        </div>
+                        <button onclick="deleteTodo('${category}', '${todo.id}')" class="text-gray-600 hover:text-rose-400 text-[10px] px-1 ml-1">&times;</button>
+                    `;
+                    listContainer.appendChild(item);
+                });
+
+                updateCategoryProgress(category);
+            }
+
+            // Global exposure for in-HTML onclicks
+            window.toggleTodo = function(category, id) {
+                const listData = category === 'study' ? studyTodos : workoutTodos;
+                const todo = listData.find(item => item.id === id);
+                if (todo) {
+                    todo.completed = !todo.completed;
+                    localStorage.setItem(`muto2_${category}_todos`, JSON.stringify(listData));
+                    renderTodoList(category);
+                    updateMutationEngine();
+                }
+            };
+
+            window.deleteTodo = function(category, id) {
+                let listData = category === 'study' ? studyTodos : workoutTodos;
+                listData = listData.filter(item => item.id !== id);
+                if (category === 'study') studyTodos = listData; else workoutTodos = listData;
+                localStorage.setItem(`muto2_${category}_todos`, JSON.stringify(listData));
+                renderTodoList(category);
+                updateMutationEngine();
+            };
+
+            // Progress Calculations
+            function updateCategoryProgress(category) {
+                const listData = category === 'study' ? studyTodos : workoutTodos;
+                const pctLabel = category === 'study' ? studyProgressPct : workoutProgressPct;
+                
+                if (listData.length === 0) {
+                    pctLabel.textContent = "0% 완료";
+                    pctLabel.className = `text-[10px] cyber-font px-2 py-0.5 rounded border ${
+                        category === 'study' ? 'text-sky-400 bg-sky-950/20 border-sky-900' : 'text-emerald-400 bg-emerald-950/20 border-emerald-900'
+                    }`;
+                    return;
+                }
+
+                const completedCount = listData.filter(todo => todo.completed).length;
+                const pct = Math.round((completedCount / listData.length) * 100);
+                pctLabel.textContent = `${pct}% 완료`;
+
+                if (pct === 100) {
+                    pctLabel.className = `text-[10px] cyber-font px-2 py-0.5 rounded border border-amber-500 bg-amber-950/50 text-amber-300 font-bold animate-pulse`;
+                } else {
+                    pctLabel.className = `text-[10px] cyber-font px-2 py-0.5 rounded border ${
+                        category === 'study' ? 'text-sky-400 bg-sky-950/20 border-sky-900' : 'text-emerald-400 bg-emerald-950/20 border-emerald-900'
+                    }`;
+                }
+            }
+
+            // Add Todo listeners
+            todoStudyAddBtn.addEventListener('click', () => {
+                const text = todoStudyInput.value.trim();
+                if (text) {
+                    studyTodos.push({ id: Date.now().toString(), text, completed: false });
+                    todoStudyInput.value = '';
+                    localStorage.setItem('muto2_study_todos', JSON.stringify(studyTodos));
+                    renderTodoList('study');
+                    updateMutationEngine();
+                }
+            });
+            todoStudyInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') todoStudyAddBtn.click();
+            });
+
+            todoWorkoutAddBtn.addEventListener('click', () => {
+                const text = todoWorkoutInput.value.trim();
+                if (text) {
+                    workoutTodos.push({ id: Date.now().toString(), text, completed: false });
+                    todoWorkoutInput.value = '';
+                    localStorage.setItem('muto2_workout_todos', JSON.stringify(workoutTodos));
+                    renderTodoList('workout');
+                    updateMutationEngine();
+                }
+            });
+            todoWorkoutInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') todoWorkoutAddBtn.click();
+            });
+
+
+            // --- WATER, SLEEP, SHOWER HANDLERS ---
+            btnWaterMinus.addEventListener('click', () => {
+                if (waterVal > 0) {
+                    waterVal = Math.max(0, waterVal - 0.25);
+                    updateWaterUI();
+                }
+            });
+            btnWaterPlus.addEventListener('click', () => {
+                if (waterVal < 3.0) {
+                    waterVal = Math.min(3.0, waterVal + 0.25);
+                    updateWaterUI();
+                }
+            });
+
+            function updateWaterUI() {
+                txtWaterVal.textContent = `${waterVal.toFixed(2)} L`;
+                localStorage.setItem('muto2_quick_water', waterVal.toString());
+                updateMutationEngine();
+            }
+
+            inputSleep.addEventListener('input', () => {
+                sleepVal = parseFloat(inputSleep.value);
+                txtSleepVal.textContent = `${sleepVal.toFixed(1)} 시간`;
+                localStorage.setItem('muto2_quick_sleep', sleepVal.toString());
+                updateMutationEngine();
+            });
+
+            // Shower activation
+            btnShower.addEventListener('click', () => {
+                isShowerDone = !isShowerDone;
+                localStorage.setItem('muto2_quick_shower', isShowerDone.toString());
+                updateShowerUI();
+                updateMutationEngine();
+            });
+
+            function updateShowerUI() {
+                if (isShowerDone) {
+                    btnShower.className = "w-full py-2 px-3 rounded-lg border border-teal-500 bg-teal-950/40 text-teal-400 font-bold text-xs transition-all flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(20,184,166,0.2)]";
+                    showerIcon.textContent = "✨";
+                    showerText.textContent = "샤워 완료!";
+                } else {
+                    btnShower.className = "w-full py-2 px-3 rounded-lg border border-amber-900 bg-amber-950/20 hover:bg-amber-950/50 text-amber-400 font-bold text-xs transition-all flex items-center justify-center gap-1.5";
+                    showerIcon.textContent = "🧼";
+                    showerText.textContent = "아직 씻지 않음";
+                }
+            }
+
+
+            // --- MUTATION GRAPHICAL ENGINE ---
+            function updateMutationEngine() {
+                // Calculate completion metrics
+                const studyCompleted = studyTodos.filter(t => t.completed).length;
+                const studyTotal = studyTodos.length;
+                const studyPct = studyTotal > 0 ? studyCompleted / studyTotal : 0;
+
+                const workoutCompleted = workoutTodos.filter(t => t.completed).length;
+                const workoutTotal = workoutTodos.length;
+                const workoutPct = workoutTotal > 0 ? workoutCompleted / workoutTotal : 0;
+
+                totalMissionsCompleted = studyCompleted + workoutCompleted;
+                totalMissionHUD.textContent = totalMissionsCompleted;
+
+                // 1. Water Mutation -> Body color translucency & bubbles
+                const opacityPercent = Math.min(100, 35 + (waterVal * 21.6)); 
+                mutoBody.style.background = `radial-gradient(circle at 30% 30%, rgb(45, 212, 191, ${opacityPercent/100}), rgb(13, 148, 136, ${opacityPercent/100}))`;
+                renderBubbles(waterVal);
+
+                // 2. Study Mutation -> Brain representation & Halo
+                if (studyTotal > 0 && studyCompleted > 0) {
+                    mutoBrain.style.opacity = '1';
+                    const brainScale = 0.6 + (studyPct * 0.7); // size scales with todo completion pct
+                    mutoBrain.style.transform = `translateX(-50%) scale(${brainScale})`;
+
+                    // If all study tasks complete
+                    if (studyPct === 1) {
+                        halo.style.opacity = '1';
+                        haloGlow.style.opacity = '0.9';
+                    } else {
+                        halo.style.opacity = '0.3';
+                        haloGlow.style.opacity = '0.4';
+                    }
+                } else {
+                    mutoBrain.style.opacity = '0';
+                    halo.style.opacity = '0';
+                    haloGlow.style.opacity = '0';
+                }
+
+                // 3. Workout Mutation -> Arm muscle & legs
+                if (workoutTotal > 0 && workoutCompleted > 0) {
+                    armLeft.style.opacity = '1';
+                    armRight.style.opacity = '1';
+                    const armScale = 0.5 + (workoutPct * 1.0); 
+                    armLeft.style.transform = `scaleX(${-armScale}) scaleY(${armScale})`;
+                    armRight.style.transform = `scaleX(${armScale}) scaleY(${armScale})`;
+
+                    if (workoutPct === 1) {
+                        mutoLegs.style.opacity = '1';
+                    } else {
+                        mutoLegs.style.opacity = '0';
+                    }
+                } else {
+                    armLeft.style.opacity = '0';
+                    armRight.style.opacity = '0';
+                    mutoLegs.style.opacity = '0';
+                }
+
+                // 4. Shower Mutation -> Bubbles on head and cleaning steam behind
+                if (isShowerDone) {
+                    showerBubblesCrown.style.opacity = '1';
+                    cleanShowerCloud.style.opacity = '0.7';
+                } else {
+                    showerBubblesCrown.style.opacity = '0';
+                    cleanShowerCloud.style.opacity = '0';
+                }
+
+                // 5. Sleep/Eyebrow styling
+                redEyeL.style.opacity = '0';
+                redEyeR.style.opacity = '0';
+                sleepParticles.style.opacity = '0';
+                eyeL.style.height = '18px';
+                eyeR.style.height = '18px';
+                eyeL.style.borderRadius = '50%';
+                eyeR.style.borderRadius = '50%';
+                mutoEyebrows.children[0].className = 'w-4.5 h-1 bg-slate-900 rounded-full rotate-0';
+                mutoEyebrows.children[1].className = 'w-4.5 h-1 bg-slate-900 rounded-full rotate-0';
+
+                if (sleepVal < 6.0) {
+                    // Bloodshot & tired
+                    redEyeL.style.opacity = '0.85';
+                    redEyeR.style.opacity = '0.85';
+                    mutoEyebrows.children[0].className = 'w-4.5 h-1 bg-slate-900 rounded-full rotate-12 translate-y-0.5';
+                    mutoEyebrows.children[1].className = 'w-4.5 h-1 bg-slate-900 rounded-full -rotate-12 translate-y-0.5';
+                } else if (sleepVal > 8.5) {
+                    // Closed sleeping eyes
+                    eyeL.style.height = '3px';
+                    eyeR.style.height = '3px';
+                    eyeL.style.borderRadius = '2px';
+                    eyeR.style.borderRadius = '2px';
+                    sleepParticles.style.opacity = '1';
+                    mutoEyebrows.children[0].className = 'w-4.5 h-1 bg-slate-900 rounded-full -rotate-6';
+                    mutoEyebrows.children[1].className = 'w-4.5 h-1 bg-slate-900 rounded-full rotate-6';
+                }
+
+                // 6. Super Evolution (When everything on the page is done!)
+                const allDone = (studyPct === 1 && studyTotal > 0) && (workoutPct === 1 && workoutTotal > 0) && isShowerDone && (waterVal >= 1.5);
+                if (allDone) {
+                    superWingsL.style.opacity = '1';
+                    superWingsR.style.opacity = '1';
+                    superWingsL.style.transform = 'scale(1.2) rotate(15deg)';
+                    superWingsR.style.transform = 'scale(1.2) rotate(-15deg)';
+                } else {
+                    superWingsL.style.opacity = '0';
+                    superWingsR.style.opacity = '0';
+                }
+
+                // Mouth styling based on progress
+                const finishedRate = (studyCompleted + workoutCompleted + isShowerDone + (waterVal >= 1.5)) / (Math.max(1, studyTotal) + Math.max(1, workoutTotal) + 2);
+                if (finishedRate >= 0.7) {
+                    mutoMouth.className = "w-6 h-3 border-b-2 border-slate-900 rounded-full mt-2 bg-transparent"; // BIG smile
+                } else if (finishedRate <= 0.25) {
+                    mutoMouth.className = "w-5 h-2 border-t-2 border-slate-900 rounded-full mt-4 bg-transparent"; // Sad frown
+                } else {
+                    mutoMouth.className = "w-6 h-0.5 bg-slate-900 mt-4"; // Neutral line
+                }
+
+                // 7. Scientific Name & Verdict Analysis
+                let nickname = '신입 프로토타입 세포 (Prototype Cell)';
+                let biologyName = 'Muto Protocellum';
+                let feedbackText = '인큐베이터에 안착했습니다. 아직 성장 기록이 충분하지 않아 본연의 상태를 조용히 관찰 중입니다. 오늘 계획한 일을 시작해 볼까요?';
+                let ratingHtml = '<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> 태초의 젤리 상태';
+                mutationBadge.className = "text-xs font-bold text-slate-400 flex items-center justify-end gap-1";
+
+                if (allDone) {
+                    nickname = '날개 달린 천상 세포 (Celestial Angel)';
+                    biologyName = 'Mutosynthesis Archangelus';
+                    feedbackText = '학습 독파, 물리 운동 달성, 청결 및 식수 공급까지 완벽히 정복했습니다! 신비로운 하얀 깃털 날개가 돋아난 은하계 단 1%의 전설적인 세포입니다.';
+                    ratingHtml = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span> 신화적 변이 (Mythic)';
+                    mutationBadge.className = "text-xs font-bold text-amber-300 flex items-center justify-end gap-1";
+                } 
+                else if (studyPct === 1 && studyTotal > 0 && sleepVal < 5.5) {
+                    nickname = '두뇌 과열 뇌포 (Hyper-intellectual Spora)';
+                    biologyName = 'Cerebrum Ardens';
+                    feedbackText = '머리를 쓰고 지식 투두를 백 퍼센트 이수했으나 어젯밤 잠이 크게 모자란 상태입니다. 과도한 자극으로 인한 충혈 상태이며 피로 에테르 누적이 극에 달했습니다.';
+                    ratingHtml = '<span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span> 과부하 위험 (Warning)';
+                    mutationBadge.className = "text-xs font-bold text-rose-400 flex items-center justify-end gap-1";
+                }
+                else if (workoutPct === 1 && workoutTotal > 0 && waterVal <= 0.75) {
+                    nickname = '말라버린 강철 세포 (Dehydrated Hulk)';
+                    biologyName = 'Myofibril Aridus';
+                    feedbackText = '모든 운동 임무를 마치고 튼튼한 다리까지 돋아났으나 마신 물의 양이 심각하게 정체되어 수축 위기가 왔습니다. 피부 윤기가 떨어지니 즉각 물을 공급하세요.';
+                    ratingHtml = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> 수분 부족 (Dry)';
+                    mutationBadge.className = "text-xs font-bold text-amber-400 flex items-center justify-end gap-1";
+                }
+                else if (studyPct >= 0.5 && workoutPct >= 0.5) {
+                    nickname = '융합형 밸런스 생명체 (Integrated Organism)';
+                    biologyName = 'Sapiens Athleticus';
+                    feedbackText = '문무를 겸비하고 있습니다. 지적 향상 활동과 액티브한 스포츠 활동을 조화롭게 이끌어낸 훌륭한 균형입니다. 완벽한 진화에 수렴해 가고 있습니다.';
+                    ratingHtml = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> 진화 순항 중 (Advancing)';
+                    mutationBadge.className = "text-xs font-bold text-emerald-400 flex items-center justify-end gap-1";
+                }
+                else if (isShowerDone && waterVal >= 2.0 && studyPct === 0 && workoutPct === 0) {
+                    nickname = '뽀송한 아쿠아 해파리 (Sparkling Aqua-Jelly)';
+                    biologyName = 'Hydro-Saponis Boomer';
+                    feedbackText = '투두는 미룬 채 샤워를 하고 시원하게 물만 드링킹하여 무해하고 깨끗해졌습니다. 세포질 청결 상태는 훌륭하나 근비대와 뇌 성장은 미미한 상태입니다.';
+                    ratingHtml = '<span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> 뽀송함 (Fresh)';
+                    mutationBadge.className = "text-xs font-bold text-cyan-400 flex items-center justify-end gap-1";
+                }
+
+                mutationTitle.textContent = nickname;
+                sciName.textContent = biologyName;
+                prescText.textContent = feedbackText;
+                mutationBadge.innerHTML = ratingHtml;
+            }
+
+            // --- SAVE SPECIEN LOGS ---
+            btnSaveSpecimen.addEventListener('click', () => {
+                const grandGoalVal = grandGoalInput.value.trim() || '지정되지 않은 꿈';
+                const rewardVal = goalRewardInput.value.trim() || '기록된 보상 없음';
+                const currentDate = new Date().toLocaleString('ko-KR', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                // Generate log payload
+                const specLog = {
+                    id: Date.now().toString(),
+                    date: currentDate,
+                    name: mutationTitle.textContent,
+                    scientific: sciName.textContent,
+                    stats: {
+                        study: `${studyTodos.filter(t => t.completed).length}/${studyTodos.length}`,
+                        workout: `${workoutTodos.filter(t => t.completed).length}/${workoutTodos.length}`,
+                        water: `${waterVal.toFixed(1)}L`,
+                        sleep: `${sleepVal}h`,
+                        shower: isShowerDone ? '완료' : '미완'
+                    },
+                    goal: grandGoalVal,
+                    reward: rewardVal
+                };
+
+                savedSpecimens.push(specLog);
+                localStorage.setItem('muto2_specimens', JSON.stringify(savedSpecimens));
+
+                renderArchive();
+                showToast("오늘의 유전 성장을 데이터 베이스에 훌륭하게 아카이빙했습니다! 🧬");
+            });
+
+            // Render Archive Cards
+            function renderArchive() {
+                if (savedSpecimens.length === 0) {
+                    archiveEmpty.classList.remove('hidden');
+                    archiveGrid.classList.add('hidden');
+                    return;
+                }
+
+                archiveEmpty.classList.add('hidden');
+                archiveGrid.classList.remove('hidden');
+                archiveGrid.innerHTML = '';
+
+                // Display days passed counts
+                labDaysHUD.textContent = `DAY ${savedSpecimens.length + 1}`;
+
+                [...savedSpecimens].reverse().forEach(log => {
+                    const card = document.createElement('div');
+                    card.className = "bg-slate-950/80 border border-gray-900 rounded-xl p-4 flex flex-col justify-between hover:border-gray-800 transition-all text-xs";
+                    
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex justify-between items-center border-b border-gray-900 pb-2 mb-2">
+                                <span class="text-[9px] cyber-font text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-900/30">
+                                    ${log.date}
+                                </span>
+                                <button onclick="deleteArchiveLog('${log.id}')" class="text-gray-500 hover:text-rose-400">&times; 폐기</button>
+                            </div>
+                            <h4 class="font-bold text-gray-100">${log.name}</h4>
+                            <span class="text-[10px] italic text-teal-400/80 block mt-0.5">${log.scientific}</span>
+                            
+                            <!-- Stats summary inside card -->
+                            <div class="grid grid-cols-2 gap-x-2 gap-y-1 mt-3 bg-gray-900/40 p-2 rounded-lg border border-gray-900/50 text-[10px] text-gray-400">
+                                <div>🧠 공부 투두: <span class="text-sky-300 font-bold">${log.stats.study}</span></div>
+                                <div>⚡ 운동 투두: <span class="text-emerald-300 font-bold">${log.stats.workout}</span></div>
+                                <div>💧 물 섭취: <span class="text-cyan-300 font-bold">${log.stats.water}</span></div>
+                                <div>💤 수면량: <span class="text-purple-300 font-bold">${log.stats.sleep}</span></div>
+                                <div class="col-span-2 border-t border-gray-900 mt-1 pt-1 flex items-center justify-between">
+                                    <span>🚿 개운한 샤워: <span class="${log.stats.shower === '완료' ? 'text-teal-400' : 'text-amber-500'} font-bold">${log.stats.shower}</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 pt-2.5 border-t border-gray-900/60 text-[10px] text-gray-500 space-y-1">
+                            <div>🎯 목표: <span class="text-gray-300 italic">${log.goal}</span></div>
+                            <div>🎁 보상: <span class="text-indigo-300 italic">${log.reward}</span></div>
+                        </div>
+                    `;
+                    archiveGrid.appendChild(card);
+                });
+            }
+
+            // Global archive delete function
+            window.deleteArchiveLog = function(id) {
+                savedSpecimens = savedSpecimens.filter(log => log.id !== id);
+                localStorage.setItem('muto2_specimens', JSON.stringify(savedSpecimens));
+                renderArchive();
+                showToast("특정 아카이브 표본을 소멸시켰습니다.");
+            };
+
+            btnClearArchive.addEventListener('click', () => {
+                if (savedSpecimens.length === 0) return;
+                const verify = confirm("모든 기록을 정말로 폐기할까요? 누적된 습관 로그가 전부 증발합니다.");
+                if (verify) {
+                    savedSpecimens = [];
+                    localStorage.removeItem('muto2_specimens');
+                    renderArchive();
+                    labDaysHUD.textContent = "DAY 1";
+                    showToast("모든 유전자 아카이브가 포맷되었습니다.");
+                }
+            });
+
+            // Toast Alert trigger
+            function showToast(message) {
+                toastMsg.textContent = message;
+                toast.classList.remove('opacity-0', 'translate-y-20', 'pointer-events-none');
+                toast.classList.add('opacity-100', 'translate-y-0');
+                
+                setTimeout(() => {
+                    toast.classList.remove('opacity-100', 'translate-y-0');
+                    toast.classList.add('opacity-0', 'translate-y-20', 'pointer-events-none');
+                }, 3000);
+            }
+
+            // --- INITIAL KICKSTART ---
+            renderTodoList('study');
+            renderTodoList('workout');
+            updateWaterUI();
+            updateShowerUI();
+            renderArchive();
+            updateMutationEngine();
+        });
+    </script>
+</body>
+</html>
+
